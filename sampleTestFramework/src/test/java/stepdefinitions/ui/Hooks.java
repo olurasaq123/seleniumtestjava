@@ -2,9 +2,11 @@ package stepdefinitions.ui;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.chrome.ChromeDriver;
 import utilities.ConfigUtil;
 import utilities.WebDriverHelpers;
+
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +21,7 @@ public class Hooks extends WebDriverHelpers {
     }
 
 
-    @Before("web")
+    @Before("@web")
     public void initialisation() throws Throwable{
         this._configUrl = new ConfigUtil();
         String browserName = _configUrl.loadEnvProfileData("browser");
@@ -32,9 +34,10 @@ public class Hooks extends WebDriverHelpers {
                 System.out.println("Use firefox to run your test automation");
                 break;
             case "chrome":
-                String path = System.getProperty("user.dir");
-                System.setProperty("webdriver.chrome.driver", path+"/tools/chromedriver.exe");
-                _webDriverHelpers.driver = new ChromeDriver();
+               // String path = System.getProperty("user.dir");
+              //  System.setProperty("webdriver.chrome.driver", path+"/tools/chromedriver.exe");
+
+                _webDriverHelpers.driver = WebDriverManager.chromedriver().create();
                 _webDriverHelpers.driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
                 _webDriverHelpers.driver.manage().window().maximize();
         }

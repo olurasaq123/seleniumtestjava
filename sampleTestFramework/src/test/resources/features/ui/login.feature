@@ -1,6 +1,7 @@
 @web
 Feature: Login
 
+  @web
   Scenario: Verify that a user can login to sauce demo app
     Given that a user launch sauce demo website
     When a user enter userName "standard_user"

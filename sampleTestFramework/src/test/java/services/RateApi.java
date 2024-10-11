@@ -8,13 +8,13 @@ import utilities.ApiHelpers;
 public class RateApi extends ApiHelpers {
 
     public static String rateAPI = "/api/Rate/get-rate";
-
+    public static String rateAPIPost = "/api/Rate/set-rate";
     Response response;
 
     public Response createNewRate(RateDataModel rateDataModel){
 
         response = givenConfig().when().body(gson().toJson(rateDataModel))
-                .post(rateAPI);
+                .post(rateAPIPost);
         return response;
     }
 
@@ -27,7 +27,7 @@ public class RateApi extends ApiHelpers {
 
     public Response updateRate(RateDataModel rateDataModel){
         response = givenConfig().when().body(gson().toJson(rateDataModel))
-                .put(rateAPI);
+                .put(rateAPIPost);
         return response;
     }
 

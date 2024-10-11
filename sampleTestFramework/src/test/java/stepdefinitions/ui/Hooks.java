@@ -20,7 +20,7 @@ public class Hooks extends WebDriverHelpers {
 
     }
 
-
+    //@Before
     @Before("@web")
     public void initialisation() throws Throwable{
         this._configUrl = new ConfigUtil();
@@ -45,7 +45,8 @@ public class Hooks extends WebDriverHelpers {
     }
 
 
-    @After("web")
+   // @After
+   @After("@web")
     public void shutDown(){
     _webDriverHelpers.driver.quit();
     }

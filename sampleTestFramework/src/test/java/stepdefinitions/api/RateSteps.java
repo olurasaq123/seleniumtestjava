@@ -15,8 +15,11 @@ public class RateSteps {
 
     private RateApi _rateApi;
     private Response response;
-    private RateDataModel rateDataModel;
+
     RateDataModel.RateDataModelBuilder rateDataModelBuilder = RateDataModel.builder();
+
+    private RateDataModel rateDataModel;
+    RateDataModel.RateDataModelBuilder rateDataBuilder = RateDataModel.builder();
 
     public RateSteps(RateApi rateApi){
         this._rateApi = rateApi;
@@ -41,5 +44,23 @@ public class RateSteps {
        String actualRateCurrency = response.jsonPath().get("toCurrency");
        String expectedCurrency = rateExpectedData.get(0).get("toCurrency");
        Assert.assertEquals(expectedCurrency, actualRateCurrency);
+    }
+
+    @Given("that a user make a Post request to set rate")
+    public void thatAUserMakeAPostRequestToSetRate(List<Map<String, String>> rateData) {
+
+        rateDataModel = rateDataBuilder
+                .rate(Integer.parseInt(rateData.get(0).get("rate")))
+                .fromCurrency(rateData.get(0).get("fromCurrency"))
+                .toCurrency(rateData.get(0).get("toCurrency")).build();
+
+
+        response = _rateApi.createNewRate(rateDataModel);
+    }
+
+    @Then("the response message should be {string}")
+    public void theResponseMessageShouldBe(String successMsg) {
+
+       Assert.assertEquals(response.jsonPath().get("message"), successMsg);
     }
 }

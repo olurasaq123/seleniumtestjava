@@ -5,6 +5,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -14,28 +15,31 @@ public class PageObjectHelper {
 
     private static Duration DRIVER_WAIT_TIME = Duration.ofSeconds(10);
 
-    @Getter
+//@Getter
     public WebDriverWait wait;
-    @Getter
-    public WebDriver webDriver;
+   // @Getter
+   // public WebDriver webDriver;
 
-    public PageObjectHelper() {
+    private WebDriverHelpers _webDriverHelpers;
+
+    public PageObjectHelper(WebDriverHelpers webDriverHelpers) {
       //  this.webDriver = WebDriverHelpers;
-        this.wait = new WebDriverWait(webDriver, DRIVER_WAIT_TIME);
+        this._webDriverHelpers = webDriverHelpers;
+        this.wait = new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME);
     }
 
     /**
      * Returns the current Url from page
      **/
     public String getCurrentUrl() {
-        return webDriver.getCurrentUrl();
+        return _webDriverHelpers.driver.getCurrentUrl();
     }
 
     /**
      * Returns the current page title from page
      */
     public String getCurrentPageTitle() {
-        return getWebDriver().getTitle();
+        return _webDriverHelpers.driver.getTitle();
     }
 
     /**
@@ -45,7 +49,7 @@ public class PageObjectHelper {
      * @return true when the title matches, false otherwise
      */
     public boolean checkPageTitle(String title) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.titleIs(title));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.titleIs(title));
     }
 
     /**
@@ -56,7 +60,7 @@ public class PageObjectHelper {
      * @return true when the title matches, false otherwise
      */
     public boolean checkPageTitleContains(String title) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.titleContains(title));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.titleContains(title));
     }
 
     /**
@@ -66,7 +70,7 @@ public class PageObjectHelper {
      * @return <code>true</code> when the URL is what it should be
      */
     public boolean checkPageUrlToBe(String url) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.urlToBe(url));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.urlToBe(url));
     }
 
     /**
@@ -76,7 +80,7 @@ public class PageObjectHelper {
      * @return <code>true</code> when the URL contains the text
      */
     public boolean checkPageUrlContains(String fraction) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.urlContains(fraction));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.urlContains(fraction));
     }
 
     /**
@@ -87,7 +91,7 @@ public class PageObjectHelper {
      */
 
     public boolean checkPageUrlMatches(String regex) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.urlMatches(regex));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.urlMatches(regex));
     }
 
     /**
@@ -108,7 +112,7 @@ public class PageObjectHelper {
 
     public WebElement waitForExpectedElement(final By by, Duration waitTimeInSeconds) {
         try {
-            WebDriverWait wait = new WebDriverWait(getWebDriver(), waitTimeInSeconds);
+            WebDriverWait wait = new WebDriverWait(_webDriverHelpers.driver, waitTimeInSeconds);
             return wait.until(visibilityOfElementLocated(by));
         } catch (NoSuchElementException e) {
             // LOG.info(e.getMessage());
@@ -126,7 +130,7 @@ public class PageObjectHelper {
             } catch (InterruptedException e) {
                 //  LOG.error(e.getMessage());
             }
-            WebElement element = getWebDriver().findElement(by);
+            WebElement element = _webDriverHelpers.driver.findElement(by);
             return element.isDisplayed() ? element : null;
         };
     }
@@ -140,7 +144,7 @@ public class PageObjectHelper {
      * @return true once the element contains the given text
      */
     public boolean textToBePresentInElement(WebElement element, String text) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElement(element, text));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElement(element, text));
     }
 
 
@@ -153,7 +157,7 @@ public class PageObjectHelper {
      * @return true once the first element located by locator contains the given text
      */
     public boolean textToBePresentInElementLocated(final By by, final String text) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
     }
 
 
@@ -166,7 +170,7 @@ public class PageObjectHelper {
      * @return true once the element's value attribute contains the given text
      */
     public boolean textToBePresentInElementValue(final WebElement element, final String text) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElementValue(element, text));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElementValue(element, text));
     }
 
 
@@ -180,7 +184,7 @@ public class PageObjectHelper {
      * the given text
      */
     public boolean textToBePresentInElementValue(final By by, final String text) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElementValue(by, text));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.textToBePresentInElementValue(by, text));
     }
 
 
@@ -192,7 +196,7 @@ public class PageObjectHelper {
      * @param frameLocator used to find the frame (id or name)
      */
     public WebDriver frameToBeAvailableAndSwitchToIt(final String frameLocator) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(frameLocator));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(frameLocator));
     }
 
 
@@ -204,7 +208,7 @@ public class PageObjectHelper {
      * @param by used to find the frame
      */
     public WebDriver frameToBeAvailableAndSwitchToIt(final By by) {
-        return new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(by));
+        return new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(by));
     }
 
 
@@ -215,7 +219,7 @@ public class PageObjectHelper {
      * @param by used to find the element
      */
     public boolean invisibilityOfElementLocated(By by) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.invisibilityOfElementLocated(by));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.invisibilityOfElementLocated(by));
     }
 
     /**
@@ -226,7 +230,7 @@ public class PageObjectHelper {
      * @param text of the element
      */
     public boolean invisibilityOfElementWithText(final By by, final String text) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.invisibilityOfElementWithText(by, text));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.invisibilityOfElementWithText(by, text));
     }
 
 
@@ -238,7 +242,7 @@ public class PageObjectHelper {
      * @return the WebElement once it is located and clickable (visible and enabled)
      */
     public WebElement elementToBeClickable(By by) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeClickable(by));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeClickable(by));
     }
 
 
@@ -251,7 +255,7 @@ public class PageObjectHelper {
      */
 
     public WebElement elementToBeClickable(final WebElement element) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeClickable(element));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeClickable(element));
     }
 
 
@@ -263,28 +267,28 @@ public class PageObjectHelper {
      * otherwise.
      */
     public boolean stalenessOf(final WebElement element) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.stalenessOf(element));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.stalenessOf(element));
     }
 
     /**
      * An expectation for checking if the given element is selected.
      */
     public boolean elementToBeSelected(final By by) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeSelected(by));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeSelected(by));
     }
 
     /**
      * An expectation for checking if the given element is selected.
      */
     public boolean elementToBeSelected(final WebElement element) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeSelected(element));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.elementToBeSelected(element));
     }
 
     /**
      * An expectation for checking if the given element is selected.
      */
     public boolean elementSelectionStateToBe(final WebElement element, final boolean selected) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.elementSelectionStateToBe(element, selected));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.elementSelectionStateToBe(element, selected));
     }
 
     /**
@@ -292,11 +296,11 @@ public class PageObjectHelper {
      */
     public boolean elementSelectionStateToBe(final By by,
                                              final boolean selected) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.elementSelectionStateToBe(by, selected));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.elementSelectionStateToBe(by, selected));
     }
 
     public void waitForAlert() {
-        (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.alertIsPresent());
+        (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.alertIsPresent());
     }
 
     /**
@@ -308,7 +312,7 @@ public class PageObjectHelper {
      * @return the list of WebElements once they are located
      */
     public List<WebElement> visibilityOfAllElementsLocatedBy(final By by) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
     }
 
 
@@ -321,7 +325,7 @@ public class PageObjectHelper {
      * @return the list of WebElements once they are located
      */
     public List<WebElement> visibilityOfAllElements(final List<WebElement> elements) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.visibilityOfAllElements(elements));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.visibilityOfAllElements(elements));
     }
 
 
@@ -333,7 +337,7 @@ public class PageObjectHelper {
      * @return the list of WebElements once they are located
      */
     public List<WebElement> presenceOfAllElementsLocatedBy(final By by) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
     }
 
     /**
@@ -346,7 +350,7 @@ public class PageObjectHelper {
      */
 
     public WebElement visibilityOf(final WebElement element) {
-        return (new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME)).until(ExpectedConditions.visibilityOf(element));
+        return (new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME)).until(ExpectedConditions.visibilityOf(element));
     }
 
 
@@ -359,7 +363,7 @@ public class PageObjectHelper {
      */
     public boolean isElementPresent(final By by) {
         try {
-            new WebDriverWait(getWebDriver(), DRIVER_WAIT_TIME).until(ExpectedConditions.presenceOfElementLocated(by));
+            new WebDriverWait(_webDriverHelpers.driver, DRIVER_WAIT_TIME).until(ExpectedConditions.presenceOfElementLocated(by));
 
         } catch (TimeoutException exception) {
             // LOG.info(exception.getMessage());
@@ -370,10 +374,10 @@ public class PageObjectHelper {
 
 
     public WebDriver getBrowserByPageTitle(String pageTitle) {
-        for (String windowHandle : webDriver.getWindowHandles()) {
-            webDriver = webDriver.switchTo().window(windowHandle);
-            if (pageTitle.equalsIgnoreCase(webDriver.getTitle())) {
-                return webDriver;
+        for (String windowHandle : _webDriverHelpers.driver.getWindowHandles()) {
+            _webDriverHelpers.driver = _webDriverHelpers.driver.switchTo().window(windowHandle);
+            if (pageTitle.equalsIgnoreCase(_webDriverHelpers.driver.getTitle())) {
+                return _webDriverHelpers.driver;
             }
         }
         return null;
@@ -381,22 +385,22 @@ public class PageObjectHelper {
 
 
     public void navigateToPreviousPageUsingBrowserBackButton() {
-        webDriver.navigate().back();
+        _webDriverHelpers.driver.navigate().back();
     }
 
     public void clickWithinElementWithXYCoordinates(WebElement webElement, int x, int y) {
-        Actions builder = new Actions(webDriver);
+        Actions builder = new Actions(_webDriverHelpers.driver);
         builder.moveToElement(webElement, x, y);
         builder.click();
         builder.perform();
     }
 
     public String getElementByTagNameWithJSExecutor(String tagName) {
-        return ((JavascriptExecutor) webDriver).executeScript("return window.getComputedStyle(document.getElementsByTagName('" + tagName + "')").toString();
+        return ((JavascriptExecutor) _webDriverHelpers.driver).executeScript("return window.getComputedStyle(document.getElementsByTagName('" + tagName + "')").toString();
     }
 
     public String getElementByQueryJSExecutor(String cssSelector) {
-        return ((JavascriptExecutor) webDriver).executeScript("return window.getComputedStyle(document.querySelector('" + cssSelector + "')").toString();
+        return ((JavascriptExecutor) _webDriverHelpers.driver).executeScript("return window.getComputedStyle(document.querySelector('" + cssSelector + "')").toString();
     }
 
     /**
@@ -405,7 +409,7 @@ public class PageObjectHelper {
      * @param by Element location found by css, xpath, id etc...
      **/
     protected WebElement element(final By by) {
-        return getWebDriver().findElement(by);
+        return _webDriverHelpers.driver.findElement(by);
     }
 
     /**
@@ -430,6 +434,14 @@ public class PageObjectHelper {
     protected void waitClearEnterText(By by, String inputText) {
         waitForExpectedElement(by).clear();
         element(by).sendKeys(inputText);
+
+    }
+
+    public void SelectItemFromDropDown(final By by, String visibleText){
+
+        Select dropdown = new Select(_webDriverHelpers.driver.findElement(by));
+
+        dropdown.selectByVisibleText(visibleText);
 
     }
 }

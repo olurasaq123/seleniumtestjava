@@ -9,10 +9,12 @@ import org.junit.runner.RunWith;
        // features = "classpath:features"
         features = "src/test/resources/features"
         ,glue={"stepdefinitions"},
-        plugin = {"pretty", "html:target/cucumber-reports.html"}, // Reporting options
-        monochrome = true // Makes the console output more readable
-       // plugin ={"html:target/cucumber-report/cucumber.html"}
+       // plugin = {"pretty", "html:target/cucumber-reports.html"}, // Reporting options
+        monochrome = true, // Makes the console output more readable
+        plugin ={"html:target/cucumber-report/cucumber.html"}
 )
+
+
 
 public class RunCukeTest {
 }

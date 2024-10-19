@@ -11,7 +11,9 @@ import org.junit.runner.RunWith;
         ,glue={"stepdefinitions"},
        // plugin = {"pretty", "html:target/cucumber-reports.html"}, // Reporting options
         monochrome = true, // Makes the console output more readable
-        plugin ={"html:target/cucumber-report/cucumber.html"}
+       // plugin ={"html:target/cucumber-report/cucumber.html"}
+
+        plugin ={"json:target/cucumber-report/cucumber.json"}
 )
 
 
